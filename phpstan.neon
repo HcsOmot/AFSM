@@ -1,0 +1,10 @@
+parameters:
+    inferPrivatePropertyTypeFromConstructor: true
+    level: max
+    paths:
+        - src
+        - tests
+    excludes_analyse:
+        - tests/bootstrap.php
+#    bootstrapFiles:
+#        - vendor/bin/.phpunit/phpunit-9-0/vendor/autoload.php
