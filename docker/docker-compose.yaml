@@ -1,0 +1,15 @@
+version: '3.7'
+
+services:
+  php:
+    container_name: php
+    hostname: 'php8-afsm'
+    volumes:
+      - '../:/opt/app:cached'
+#    environment:
+##        COMPOSER_ALLOW_XDEBUG: '0' # Disable XDebug while working with Composer
+#        XDEBUG_CONFIG: 'xdebug.mode=debug' # Enable XDebug for CLI tools (e.g. tests and console)
+#        PHP_IDE_CONFIG: 'serverName=Server' # Hint XDebug and IDE which server to use to resolve paths mapping
+    build:
+      context: ../
+      dockerfile: docker/php.Dockerfile

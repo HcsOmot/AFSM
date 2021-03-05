@@ -1,0 +1,12 @@
+version: '2'
+
+options:
+    verbose: true
+
+syncs:
+    project:
+        src: '../'
+        sync_strategy: 'unison'
+        sync_excludes: ['.idea', 'var/cache', 'vendor']
+        sync_userid: '1000' # Sync this ID with docker-compose's `user``
+        watch_excludes: ['var/cache', 'vendor']
