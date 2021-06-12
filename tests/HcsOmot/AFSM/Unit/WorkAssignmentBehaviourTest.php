@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace Tests\HcsOmot\AFSM;
+namespace Tests\HcsOmot\AFSM\Unit;
 
 use App\HcsOmot\AFSM\AssignedWorkAssignment;
 use App\HcsOmot\AFSM\CannotStartWorkOnAssignmentMoreThanOnce;
@@ -11,7 +11,7 @@ use App\HcsOmot\AFSM\WorkAssignment;
 use App\HcsOmot\AFSM\WorkAssignmentInProgress;
 use PHPUnit\Framework\TestCase;
 
-class WorkAssignmentTest extends TestCase {
+class WorkAssignmentBehaviourTest extends TestCase {
     public function testWorkAssignmentCanBeAssignedToAnEmployee(): void
     {
         $actual = WorkAssignment::assignTo('Rambo', 10);

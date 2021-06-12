@@ -4,29 +4,44 @@ declare(strict_types=1);
 namespace App\HcsOmot\AFSM;
 
 class AssignedWorkAssignment {
-    private string $employee;
-    private int $expiresAfter;
-    private int $daysPassedSinceAssigned;
-    private bool $isUsable;
+//    private string $employee;
+//    private int $expiresAfter;
+//    private int $daysPassedSinceAssigned;
+//    private bool $isUsable;
+    private WorkAssignmentState $state;
 
-    private function __construct(string $employee, int $expiresAfter)
+    public static function reconstitute(WorkAssignmentState $assignmentState): self
     {
-        $this->employee = $employee;
-        $this->expiresAfter = $expiresAfter;
-        $this->daysPassedSinceAssigned = 0;
-        $this->isUsable = true;
+        return new self($assignmentState);
+    }
+
+    public function getState(): WorkAssignmentState
+    {
+        return $this->state;
+    }
+
+    private function __construct(WorkAssignmentState $assignmentState)
+    {
+//        $this->employee = $employee;
+//        $this->expiresAfter = $expiresAfter;
+//        $this->daysPassedSinceAssigned = 0;
+//        $this->isUsable = true;
+        $this->state = $assignmentState;
     }
 
     public static function assignToEmployee(string $employee, int $expiresAfter): self
     {
-        return new self($employee, $expiresAfter);
+//         NOTE: It probably should not be possible to assign the same task more than once to the same employee
+//          The act of re-assignment is probably a transfer of a WorkAssignment to another employee
+        $state = new WorkAssignmentState($employee, $expiresAfter, false);
+        return new self($state);
     }
 
     public function startWork(): WorkAssignmentInProgress
     {
-        $this->verifyUsage();
+        $this->preventRestartingWork();
         $workAssignmentInProgress = WorkAssignmentInProgress::fromAssignedWorkAssignment($this);
-        $this->markUnusable();
+        $this->preventFurtherUse();
         return $workAssignmentInProgress;
     }
 
@@ -39,15 +54,14 @@ class AssignedWorkAssignment {
         return $this;
     }
 
-    private function markUnusable(): void
+    private function preventFurtherUse(): void
     {
-        $this->isUsable = false;
+        $this->state->setUnusable();
     }
 
-//        TODO: Poor method name, we can do better. What's going on here? What's the point of this guard clause?
-    private function verifyUsage(): void
+    private function preventRestartingWork(): void
     {
-        if (false === $this->isUsable) {
+        if (false === $this->state->isUsable()) {
 //            TODO: Refactor the exception?
 //            PROBLEM: If we want to signal the info / id of assignment already in progress, originating from this
 //              specific assigned work assignment, the transition Assigned -> InProgress would need to hold a forward reference
